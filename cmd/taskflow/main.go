@@ -1,14 +1,14 @@
 package main
 
 import (
+	"net/http"
+	"os"
 	"taskflow/internal/database"
 	"taskflow/internal/handlers"
 	"taskflow/internal/repositories"
 	"taskflow/internal/services"
 	"taskflow/pkg/cache"
 	"taskflow/pkg/logging"
-	"net/http"
-	"os"
 )
 
 func main() {
@@ -41,7 +41,6 @@ func main() {
 	})
 
 	http.HandleFunc("/tasks/", func(w http.ResponseWriter, r *http.Request) {
-		// Check if it's a versions request
 		if len(r.URL.Path) > 8 && r.URL.Path[len(r.URL.Path)-9:] == "/versions" {
 			taskHandler.GetTaskVersions(w, r)
 			return
@@ -60,7 +59,6 @@ func main() {
 		}
 	})
 
-	// Get port from environment variable or default to 8080
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"

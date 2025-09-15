@@ -5,28 +5,24 @@ import (
 	"net/http"
 )
 
-// Response represents a standard API response
 type Response struct {
 	Success bool        `json:"success"`
 	Message string      `json:"message,omitempty"`
 	Data    interface{} `json:"data,omitempty"`
 }
 
-// ErrorResponse represents a standard error response
 type ErrorResponse struct {
 	Success bool   `json:"success"`
 	Error   string `json:"error"`
 	Code    int    `json:"code"`
 }
 
-// SendJSON sends a JSON response
 func SendJSON(w http.ResponseWriter, data interface{}, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	json.NewEncoder(w).Encode(data)
 }
 
-// SendSuccess sends a success response
 func SendSuccess(w http.ResponseWriter, data interface{}) {
 	response := Response{
 		Success: true,
@@ -35,7 +31,6 @@ func SendSuccess(w http.ResponseWriter, data interface{}) {
 	SendJSON(w, response, http.StatusOK)
 }
 
-// SendError sends an error response
 func SendError(w http.ResponseWriter, message string, code int) {
 	response := ErrorResponse{
 		Success: false,

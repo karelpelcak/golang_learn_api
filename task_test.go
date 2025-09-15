@@ -1,21 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"taskflow/internal/database"
 	"taskflow/internal/models"
 	"taskflow/internal/repositories"
-	"fmt"
 	"testing"
 )
 
 func TestTaskRepository(t *testing.T) {
-	// Initialize database
 	database.ConnectDB()
 
-	// Initialize repository
 	repo := repositories.NewTaskRepository()
 
-	// Create a task
 	task := &models.Task{
 		Title:       "Test Task",
 		Description: "This is a test task",
@@ -23,7 +20,6 @@ func TestTaskRepository(t *testing.T) {
 		Priority:    1,
 	}
 
-	// Test Create
 	err := repo.Create(task)
 	if err != nil {
 		t.Errorf("Failed to create task: %v", err)
@@ -33,7 +29,6 @@ func TestTaskRepository(t *testing.T) {
 		t.Error("Task ID should not be zero after creation")
 	}
 
-	// Test GetByID
 	retrievedTask, err := repo.GetByID(task.ID)
 	if err != nil {
 		t.Errorf("Failed to get task: %v", err)
@@ -43,7 +38,6 @@ func TestTaskRepository(t *testing.T) {
 		t.Errorf("Expected title %s, got %s", task.Title, retrievedTask.Title)
 	}
 
-	// Test Update
 	task.Title = "Updated Task"
 	task.Version = 1
 	err = repo.Update(task)
@@ -51,7 +45,6 @@ func TestTaskRepository(t *testing.T) {
 		t.Errorf("Failed to update task: %v", err)
 	}
 
-	// Verify update
 	updatedTask, err := repo.GetByID(task.ID)
 	if err != nil {
 		t.Errorf("Failed to get updated task: %v", err)
@@ -65,7 +58,6 @@ func TestTaskRepository(t *testing.T) {
 		t.Errorf("Expected version %d, got %d", 2, updatedTask.Version)
 	}
 
-	// Test GetVersions
 	versions, err := repo.GetVersions(task.ID)
 	if err != nil {
 		t.Errorf("Failed to get task versions: %v", err)
@@ -75,7 +67,6 @@ func TestTaskRepository(t *testing.T) {
 		t.Errorf("Expected 2 versions, got %d", len(versions))
 	}
 
-	// Test GetAll
 	tasks, err := repo.GetAll(&models.TaskFilter{})
 	if err != nil {
 		t.Errorf("Failed to get all tasks: %v", err)
@@ -85,13 +76,11 @@ func TestTaskRepository(t *testing.T) {
 		t.Error("Expected at least one task")
 	}
 
-	// Test Delete
 	err = repo.Delete(task.ID)
 	if err != nil {
 		t.Errorf("Failed to delete task: %v", err)
 	}
 
-	// Verify deletion
 	_, err = repo.GetByID(task.ID)
 	if err == nil {
 		t.Error("Expected error when getting deleted task")
